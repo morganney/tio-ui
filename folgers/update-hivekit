@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+// CLI usage: ./folgers/update-hivekit -v=0.2.140
+
+const child = require('child_process');
+const path = require('path');
+const { argv } = require('yargs');
+
+const apps = require('./config/apps');
+
+const escapeRegEx = (txt) => {
+  return txt.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+};
+
+if (argv.v) {
+    const regex = new RegExp(escapeRegEx(argv.v));
+    const versions = child.execSync('yarn info @hivekit/index versions');
+
+    // See if the requested version has actually been published
+    if (regex.test(versions.toString())) {
+        Object.keys(apps).forEach((key) => {
+            const root = apps[key].root;
+
+            if (root) {
+                const dir = path.join(__dirname, '..', 'apps', key);
+                const cmd = `yarn add @hivekit/index@${argv.v} --save --ignore-scripts`;
+
+                console.log(`\nUpdating @hivekit/index for ${key}`);
+
+                try {
+                    process.chdir(dir);
+                    child.execSync(cmd, { stdio: 'inherit' });
+                } catch (err) {
+                    console.error(`There was an error updating hivekit for ${key}: ${err.message}`);
+                    process.exit(1);
+                }
+            }
+        });
+
+        // Update hivekit for deps/common
+
+        try {
+            process.chdir(path.join(__dirname, '..', 'deps', 'common'));
+            child.execSync(`yarn add @hivekit/index@${argv.v} --dev --ignore-scripts`, { stdio: 'inherit' });
+            child.execSync(`yarn add @hivekit/index@">=${argv.v}" --peer --ignore-scripts`, { stdio: 'inherit' });
+        } catch (err) {
+            console.error(`There was an error updating hivekit for common: ${err.message}`);
+            process.exit(1);
+        }
+    }
+}

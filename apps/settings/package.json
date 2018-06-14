@@ -1,0 +1,20 @@
+{
+  "name": "tio-settings",
+  "version": "0.0.1",
+  "description": "Settings app to Tenable.io frontend",
+  "private": true,
+  "main": "./src/index.js",
+  "repository": "ssh://git@stash.corp.tenablesecurity.com:7999/tps/tio_ui.git",
+  "dependencies": {
+    "@hivekit/index": "0.2.157",
+    "prop-types": "^15.5.10",
+    "react": ">=16.3.0 <17.0.0",
+    "react-dom": ">=16.3.0 <17.0.0",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "redux-form": "^7.3.0",
+    "tio-alloy": "^0.0.1",
+    "tio-common": "0.0.1"
+  }
+}

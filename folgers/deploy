@@ -1,0 +1,166 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const fs = require('fs');
+const { execSync } = require('child_process');
+
+const { argv } = require('yargs');
+const RegClient = require('npm-registry-client');
+const semver = require('semver');
+const semverRegex = require('semver-regex');
+
+const deps = require('./config/deps');
+
+// TODO: consider using env variables
+let registry = 'https://nexus.cloud.aws.tenablesecurity.com/content/repositories/webui_private';
+let token = 'd1c705ae-dc30-36a9-bc36-37b06d599264';
+
+function install () {
+    return new Promise((resolve, reject) => {
+        try {
+            execSync('yarn install --skip-integrity-check', { stdio: 'inherit' });
+            resolve({installed: true});
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
+function pack (pkg) {
+    const filename = `${pkg.name}-v${pkg.version}.tgz`;
+
+    execSync(`yarn pack --filename ${filename}`, {
+        cwd: pkg.root,
+        stdio: 'inherit'
+    });
+
+    return filename;
+}
+
+function publishWithYarnCli (packages) {
+    return new Promise((resolve, reject) => {
+        try {
+            const authKey = `${registry.split(':')[1]}:_authToken=${token}`;
+
+            // Yarn reads from .npmrc for auth token when publishing
+            execSync(`npm config set ${authKey} -q`, { stdio: 'inherit' });
+
+            for (const name in packages) {
+                const pkg = packages[name];
+
+                console.log(`Publishing package ${name} ...`);
+                execSync(`yarn publish --new-version ${pkg.version} --registry ${registry}`, {
+                    cwd: pkg.root,
+                    stdio: 'inherit'
+                });
+            }
+            resolve({published: true});
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
+function publishWithNpmRegistryClient (packages) {
+    const client = new RegClient();
+    const promises = [];
+    const getPromise = (pkg) => {
+        return new Promise((resolve, reject) => {
+            const filename = pack(pkg);
+
+            console.log(`Publishing package ${pkg.name} ...`);
+            client.publish(registry, {
+                auth: {
+                    token,
+                    alwaysAuth: true
+                },
+                metadata: pkg,
+                body: fs.createReadStream(path.join(pkg.root, filename))
+            }, (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+
+                resolve(data);
+            });
+        });
+    };
+
+    for (const name in packages) {
+        promises.push(getPromise(packages[name]));
+    }
+
+    return Promise.all(promises);
+}
+
+function publish (packages = {}, useYarn = true) {
+    if (Object.keys(packages).length) {
+        if (useYarn) {
+            return publishWithYarnCli(packages);
+        }
+
+        return publishWithNpmRegistryClient(packages);
+    }
+}
+
+function build () {
+    return new Promise((resolve, reject) => {
+        console.log('Building frontend ...');
+        try {
+            // commenting out for now so tests wont run by default. Once the app is more stable and we want tests to run remove this comment and restore the line below
+            // execSync('./node_modules/.bin/jest', { stdio: 'inherit' });
+            execSync('./node_modules/.bin/webpack --env.production', { stdio: 'inherit' });
+            resolve({built: true});
+        } catch (err) {
+            reject(err);
+        }
+    });
+}
+
+function handleError (err) {
+    console.log('Frontend build failed.');
+    console.error(err.stack);
+    process.exit(1);
+}
+
+function getPackagesToPublish () {
+    const packages = {};
+
+    deps.forEach((dep) => {
+        const root = path.join(__dirname, '..', 'deps', dep);
+        const pkg = require(path.join(root, 'package.json'));
+        const stdout = execSync(`yarn info ${pkg.name} version`);
+        // First match is yarn's semver string
+        const [, version] = stdout.toString().match(semverRegex());
+        let publishable = semver.gt(pkg.version, version);
+
+        if (argv.snapshot) {
+            publishable = publishable || semver.eq(pkg.version, version);
+        }
+
+        if (publishable) {
+            packages[pkg.name] = { ...pkg, root };
+        }
+    });
+
+    return packages;
+}
+
+async function deploy () {
+    try {
+        await install();
+        await publish(getPackagesToPublish());
+        await build();
+        console.log('\nFrontend build and publishing successful. ☕️\n');
+    } catch (err) {
+        handleError(err);
+    }
+}
+
+if (argv.snapshot) {
+    // CLI ./folgers/deploy --snapshot
+    registry = 'https://nexus.cloud.aws.tenablesecurity.com/content/repositories/webui_snapshot/';
+    token = '8de59178-1301-3021-929f-8dacc6939a85';
+}
+
+deploy();

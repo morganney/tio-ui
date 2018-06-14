@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+
+const glob = require('glob');
+const { transformFileSync } = require('babel-core');
+const manager = require('react-intl-translations-manager').default;
+
+const languages = require('../deps/alloy/i18n/locales');
+
+const workingDir = path.normalize(`${__dirname}/../tmp`);
+const translationsDir = path.normalize(`${__dirname}/../deps/alloy/i18n/translations`);
+const whitelistsDir = path.normalize(`${__dirname}/../deps/alloy/i18n/whitelists`);
+const messagesFilename = path.join(workingDir, 'i18n-messages.json');
+const messages = [];
+
+glob('{apps,deps}/**/src/**/{messages/,messages}*.js', (err, files) => {
+    if (err) {
+        throw err;
+    }
+
+    files.forEach((file) => {
+        const data = transformFileSync(file, { plugins: ['react-intl'] });
+        const fileMessages = data.metadata['react-intl'].messages;
+
+        if (fileMessages.length) {
+            messages.push(...fileMessages);
+        }
+    });
+
+    if (!fs.existsSync(workingDir)) {
+        fs.mkdirSync(workingDir);
+    }
+
+    fs.writeFileSync(messagesFilename, JSON.stringify(messages, null, '\t'));
+    manager({
+        messagesDirectory: workingDir,
+        translationsDirectory: translationsDir,
+        whitelistsDirectory: whitelistsDir,
+        languages
+    });
+});

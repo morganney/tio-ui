@@ -1,0 +1,6 @@
+# set default
+* text=auto
+
+# source code
+*.bat      text eol=crlf
+*.sh       text eol=lf

@@ -1,0 +1,1 @@
+export { ScheduleComponent } from './containers';

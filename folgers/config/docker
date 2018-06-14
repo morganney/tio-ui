@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+IMAGE_NAME="tio_ui"
+CONTAINER_NAME="tio_ui"
+APP_FOLDER='/usr/src/main';

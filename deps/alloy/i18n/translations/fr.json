@@ -1,0 +1,9 @@
+{
+  "FORGOT_PASSWORD_LINK": "Mot de passe oublié?",
+  "FORM_HAS_ERRORS": "Veuillez corriger l'élément de formulaire non {count, plural, one {valide} other {valides}}",
+  "NO_EMPTY_INPUT": "Le {type} ne doit pas être vide",
+  "PASSWORD_PLACEHOLDER": "Mot de passe",
+  "SIGN_IN": "Se connecter",
+  "SIGN_OUT": "Sign Out",
+  "USERNAME_PLACEHOLDER": "Nom d'utilisateur"
+}

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+source "./folgers/config/docker"
+
+if [[ "$*" =~ "--no-docker" ]]; then
+    echo "+ Skipping Docker Implementation; Installing locally"
+    yarn run init
+    exit 0;
+fi
+
+if [[ ! -f ./yarn.lock ]]; then
+    echo "+ Creating a temporary yarn.lock file (prevents docker image build from failing)"
+    touch yarn.lock
+fi
+
+echo "+ Building a new docker image"
+docker build -t $IMAGE_NAME . || { echo 'Docker Image Build failed'; exit 1; }
+
+echo "+ Saving newly generated yarn.lock file, if any"
+docker run --rm --entrypoint cat $IMAGE_NAME:latest $APP_FOLDER/yarn.lock > ./yarn.lock

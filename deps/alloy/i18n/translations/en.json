@@ -1,0 +1,9 @@
+{
+  "FORGOT_PASSWORD_LINK": "Forgot Password?",
+  "FORM_HAS_ERRORS": "Please correct invalid form {count, plural, on {element} other {elements}}",
+  "NO_EMPTY_INPUT": "{type} must not be blank",
+  "PASSWORD_PLACEHOLDER": "Password",
+  "SIGN_IN": "Sign In",
+  "SIGN_OUT": "Sign Out",
+  "USERNAME_PLACEHOLDER": "Username"
+}

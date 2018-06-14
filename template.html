@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <% let plugin = htmlWebpackPlugin %>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8" />
+        <title><%= plugin.options.title %></title>
+    </head>
+    <body>
+        <div id="main-app"></div>
+        <% Object.keys(plugin.files.chunks).forEach((chunk) => { %>
+            <% let appName = plugin.options.config.mapChunkToApp[chunk]; %>
+            <% if (appName) { %>
+                <div id="<%= appName %>"></div>
+                <script data-name="<%= appName %>" src="<%= plugin.files.chunks[chunk].entry %>?<%= plugin.options.config.deployVersion %>"></script>
+            <% } else { %>
+                <script src="<%= plugin.files.chunks[chunk].entry %>?<%= plugin.options.config.deployVersion %>"></script>
+            <% } %>
+        <% }); %>
+    </body>
+</html>

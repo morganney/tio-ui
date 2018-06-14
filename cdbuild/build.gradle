@@ -1,0 +1,14 @@
+buildscript {
+    repositories {
+        maven {url "https://nexus.cloud.aws.tenablesecurity.com/content/groups/tenable-cloud/"}
+    }
+
+    dependencies {
+        classpath("com.tenable.service:cloudiron-plugin:2.0.20-SNAPSHOT")
+    }
+}
+
+group "com.tenable.service"
+
+apply plugin: "base"
+apply plugin: "cloudiron"

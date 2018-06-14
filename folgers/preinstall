@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+
+const child = require('child_process');
+const path = require('path');
+
+const deps = require('./config/deps');
+
+deps.forEach((dep) => {
+    try {
+        process.chdir(path.join(__dirname, '..', 'deps', dep));
+        console.log(`\nInstalling ${dep} ...`);
+        // Deps should have a 'prepare' hook that essentially builds
+        // or "prepares" the dependency for consumption when installed
+        child.execSync('yarn install', {stdio: 'inherit'});
+    } catch (e) {
+        console.error(`There was an error installing ${dep}: ${e.message}`);
+        process.exit(1);
+    }
+});
+
+console.log('\nPreinstall complete! ☕️\n\nInstalling T.io ...');

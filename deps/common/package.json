@@ -1,0 +1,46 @@
+{
+  "name": "tio-common",
+  "version": "0.0.1",
+  "description": "Common/shared components for tio apps.",
+  "main": "./dist/tio-common.js",
+  "repository": "ssh://git@stash.corp.tenablesecurity.com:7999/tps/tio_ui.git",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@babel/cli": "7.0.0-beta.41",
+    "@babel/core": "7.0.0-beta.41",
+    "@babel/plugin-proposal-class-properties": "7.0.0-beta.41",
+    "@babel/plugin-proposal-object-rest-spread": "7.0.0-beta.41",
+    "@babel/preset-env": "7.0.0-beta.41",
+    "@babel/preset-react": "7.0.0-beta.41",
+    "@babel/register": "7.0.0-beta.41",
+    "@hivekit/index": "0.2.160",
+    "babel-loader": "8.0.0-beta.2",
+    "moment": "2.22.1",
+    "prop-types": "^15.6.1",
+    "react": ">=16.3.0 <17.0.0",
+    "react-dom": ">=16.3.0 <17.0.0",
+    "react-redux": "5.0.7",
+    "redux-form": "7.3.0",
+    "reselect": "3.0.1",
+    "styled-components": "3.2.3",
+    "tio-alloy": "0.0.1",
+    "webpack": "4.6.0",
+    "webpack-bundle-analyzer": "2.11.1",
+    "webpack-cli": "2.1.2"
+  },
+  "peerDependencies": {
+    "@hivekit/index": ">=0.2.157",
+    "moment": ">=2.22.1",
+    "prop-types": "^15.6.1",
+    "react": ">=16.3.0 <17.0.0",
+    "react-dom": ">=16.3.0 <17.0.0",
+    "react-redux": ">=5.0.7",
+    "redux-form": ">=7.3.0",
+    "reselect": ">=3.0.1",
+    "styled-components": ">=3.2.3",
+    "tio-alloy": ">=0.0.1"
+  },
+  "scripts": {
+    "prepare": "webpack"
+  }
+}

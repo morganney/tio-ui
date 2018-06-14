@@ -1,0 +1,24 @@
+{
+  "name": "tio-dashboards",
+  "version": "0.0.1",
+  "description": "dashboards app to Tenable.io frontend",
+  "private": true,
+  "main": "./src/index.js",
+  "repository": "ssh://git@stash.corp.tenablesecurity.com:7999/tps/webui_frontend.git",
+  "dependencies": {
+    "@hivekit/index": "0.2.157",
+    "lodash": "^4.17.5",
+    "prop-types": "^15.5.10",
+    "react": ">=16.3.0 <17.0.0",
+    "react-dnd": "^2.5.4",
+    "react-dnd-html5-backend": "^2.5.4",
+    "react-dom": ">=16.3.0 <17.0.0",
+    "react-intl": "^2.4.0",
+    "react-intl-redux": "^0.7.0",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "tio-alloy": "^0.0.1",
+    "tio-common": "0.0.1"
+  }
+}

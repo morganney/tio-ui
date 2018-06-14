@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+source "./folgers/config/docker"
+
+# Read in the command and arguments passed in
+IFS=' ' read -ra input <<< "$*"
+command=${input[0]}
+cmdArgs=$( IFS=$' '; echo "${input[@]:1}" )
+
+# If command isn't defined, set it to a default vaule
+if [[ "$command" == "" ]]; then
+    command="yarn"
+fi
+
+# If cmdArgs isn't defined, set it to a default value
+if [[ "$cmdArgs" == "" ]]; then
+    cmdArgs="run dev $*"
+fi
+
+# Remove any existing containers currently running (fail silently if there are none)
+docker rm $CONTAINER_NAME 2>/dev/null
+
+# Start the docker container
+# Port 3333 - loads the UI proxied through BrowserSync
+# Port 3334 - loads the BrowserSync control panel
+# Port 3335 - loads the UI by itself (no BrowserSync)
+docker run -it --rm --name $CONTAINER_NAME -p 3333:3333 -p 3334:3334 -p 3335:3335 -v $PWD:/usr/src/main --entrypoint $command $IMAGE_NAME:latest $cmdArgs

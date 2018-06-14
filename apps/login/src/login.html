@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <% var plugin = htmlWebpackPlugin %>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8" />
+        <base href="/" />
+        <title><%= htmlWebpackPlugin.options.title %></title>
+    </head>
+    <body>
+        <% if (htmlWebpackPlugin.options.session) { %>
+            <p>You're logged in</p>
+        <% } else { %>
+            <main id="login"></main>
+        <% } %>
+        <script src="<%= plugin.files.chunks.login.entry %>?<%= plugin.options.config.deployVersion %>"></script>
+    </body>
+</html>

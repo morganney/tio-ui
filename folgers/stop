@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+source "./folgers/config/docker"
+
+echo "+ Stopping container \"$CONTAINER_NAME\""
+
+docker stop "$CONTAINER_NAME"
+
+echo "+ Container has been stopped!"

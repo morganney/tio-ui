@@ -1,0 +1,190 @@
+#!/usr/bin/env node
+
+const path = require('path');
+
+module.exports = {
+    'web-app-scanning': {
+        id: 'webAppScanning',
+        name: 'Web App Scanning',
+        home: null,
+        featureFlag: 'webapp_scanning_gen2',
+        legacy: {
+            featureFlag: 'webapp_scanning',
+            home: '/dashboards/workbench/web-applications/plugin',
+            navItems: [
+                {
+                    name: 'Vulnerabilities',
+                    path: '/dashboards/workbench/web-applications/plugin'
+                },
+                {
+                    name: 'Applications',
+                    path: '/dashboards/workbench/web-applications/application'
+                },
+                {
+                    name: 'Scans',
+                    path: '/scans/folders'
+                }
+            ]
+        },
+        licenseKey: 'was',
+        root: null,
+        navItems: [
+            {
+                name: 'Vulnerabilities',
+                path: null
+            },
+            {
+                name: 'Applications',
+                path: null
+            },
+            {
+                name: 'Scans',
+                path: null
+            }
+        ]
+    },
+    'dashboards': {
+        id: 'dashboards',
+        name: 'Dashboards',
+        home: '/dashboards/vulnerability-management',
+        featureFlag: 'dashboards_gen2',
+        licenseKey: null,
+        legacy: {},
+        earlyAccess: true,
+        root: path.resolve(__dirname, '../../apps/dashboards/src/index.js')
+    },
+    'lumin': {
+        id: 'lumin',
+        name: 'Lumin Beta',
+        home: '/lumin/landing',
+        featureFlag: 'lumin_beta_enabled',
+        licenseKey: null,
+        legacy: {},
+        root: path.resolve(__dirname, '../../apps/lumin/src/index.js')
+    },
+    'container-security': {
+        id: 'containerSecurity',
+        name: 'Container Security',
+        home: '/container-security/dashboard',
+        featureFlag: 'container_security_gen2',
+        legacy: {
+            featureFlag: 'container_security',
+            home: '/container-security/dashboard',
+            navItems: [
+                {
+                    name: 'Images',
+                    path: '/container-security/reports/tag'
+                },
+                {
+                    name: 'Policies',
+                    path: '/container-security/policies'
+                },
+                {
+                    name: 'Repositories',
+                    path: '/container-security/repos'
+                }
+            ]
+        },
+        licenseKey: 'consec',
+        root: path.resolve(__dirname, '../../apps/container-security/src/index.js'),
+        // TODO: replace these paths, as routing support is built out between EA and GA.
+        navItems: [
+            {
+                name: 'Images',
+                path: '/container-security/dashboard/images'
+            },
+            {
+                name: 'Policies',
+                path: '/container-security/dashboard/policies'
+            },
+            {
+                name: 'Repositories',
+                path: '/container-security/dashboard'
+            }
+        ]
+    },
+    'vulnerability-management': {
+        id: 'vulnerabilityManagement',
+        name: 'Vulnerability Management',
+        home: '/dashboards/vulnerability-management',
+        featureFlag: 'vulnerability_management_gen2',
+        legacy: {
+            featureFlag: null,
+            home: '/dashboards/workbench/vulnerabilities/plugin',
+            navItems: [
+                {
+                    name: 'Assets',
+                    path: '/dashboards/workbench/assets'
+                },
+                {
+                    name: 'Vulnerabilities',
+                    path: '/dashboards/workbench/vulnerabilities/plugin'
+                },
+                {
+                    name: 'Scans',
+                    path: '/scans/folders'
+                }
+            ]
+        },
+        earlyAccess: true,
+        licenseKey: null,
+        root: path.resolve(__dirname, '../../apps/vulnerability-management/src/index.js'),
+        navItemsBasePathLength: 2,
+        navItems: [
+            {
+                name: 'Assets',
+                path: {
+                    // VM is a hybrid of legacy/current-gen until navItem feature areas are prod-ready
+                    legacy: true,
+                    value: '/dashboards/workbench/assets'
+                }
+            },
+            {
+                name: 'Vulnerabilities',
+                path: {
+                    append: true,
+                    regex: /^\/dashboards/i.toString(),
+                    pass: '/vulnerabilities/plugins',
+                    // 'fail' path will not be appended
+                    fail: '/dashboards/vulnerability-management/vulnerabilities/plugins'
+                }
+            },
+            {
+                name: 'Scans',
+                path: {
+                    legacy: true,
+                    value: '/scans/folders'
+                }
+            }
+        ]
+    },
+    'login': {
+        id: 'login',
+        name: 'Login',
+        home: '',
+        legacy: {},
+        root: path.resolve(__dirname, '../../apps/login/src/index.js')
+    },
+    'settings': {
+        id: 'settings',
+        name: 'Settings',
+        home: '/settings',
+        featureFlag: null,
+        licenseKey: null,
+        legacy: {
+            featureFlag: null,
+            home: '/settings/about',
+            navItems: []
+        },
+        root: path.resolve(__dirname, '../../apps/settings/src/index.js')
+    },
+    'tenableio': {
+        id: 'tenableio',
+        name: 'Tenable.io',
+        home: '/',
+        featureFlag: 'static',
+        licenseKey: null,
+        legacy: {},
+        root: path.resolve(__dirname, '../../apps/tenableio/src/index.js')
+    }
+};

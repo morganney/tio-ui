@@ -1,0 +1,7 @@
+{
+    "name": "tenable-telemetry",
+    "version": "1.0.0",
+    "description": "A client-side library for collecting product usage telemetry and events",
+    "private": true,
+    "main": "tenable-telemetry.js"
+}

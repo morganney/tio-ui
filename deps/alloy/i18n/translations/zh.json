@@ -1,0 +1,9 @@
+{
+  "FORGOT_PASSWORD_LINK": "忘记密码了吗?",
+  "FORM_HAS_ERRORS": "请纠正无效的表单 {count, plural, one {元素} other {元素}}",
+  "NO_EMPTY_INPUT": "{type}不能为空",
+  "PASSWORD_PLACEHOLDER": "密码",
+  "SIGN_IN": "签到",
+  "SIGN_OUT": "Sign Out",
+  "USERNAME_PLACEHOLDER": "用户名"
+}

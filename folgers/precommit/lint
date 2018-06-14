@@ -1,0 +1,23 @@
+#!/bin/sh
+# Run `yarn run lint` before committing.
+echo '[Pre-commit] Linting before commit...\n'
+git_status=$({ git status; } 2>&1)
+lint_results=$(yarn run lint --color | tee /dev/tty)
+
+echo "\n"
+
+if [[ "$lint_results" != *"Linting Successful"* ]]; then
+    echo "[Pre-commit] Linting errors were found, cancelling commit.\n"
+    exit 1
+else
+    echo '[Pre-commit] Linting successful, commit will continue.'
+
+    # git commit -> prehook runs -> lint fails -> user makes changes -> reruns git commit -> prehook runs -> changed files are not added to the stage, BUT the lint goes against the filesystem so it permits commit
+    # This merely warns the user that the above situation may have happened to their code.
+    if [[ "$git_status" = *"Changes not staged for commit"* ]]; then
+        echo '[Pre-commit] Warning: Some changes were made but not added to the git stage, which may have given a false positive on the lint for this commit.'
+        echo '[Pre-commit] You may want to re-add the changes and re-commit before proceeding.'
+    fi
+
+    echo "\n"
+fi

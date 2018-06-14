@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+source "./folgers/config/docker"
+
+# If running mac, then set host domain to the docker supported hostname.
+# Otherwise, attempt to use the ip command to determine the host machine's ip address
+if [[ `uname -s` =~ "Darwin" ]]; then
+    HOST_DOMAIN='docker.for.mac.localhost'
+else
+    HOST_DOMAIN=`ip route | awk '/default/ { print $3; exit }'`
+fi
+
+# Sample the cli flags
+port=3333
+cmdArgs="$*";
+
+# If the "no-docker" flag was included in the flags, skip docker and launch the application
+if [[ "$cmdArgs" =~ "--no-docker" ]]; then
+    echo "+ Skipping Docker Implementation; Running locally"
+    yarn run dev $cmdArgs
+    exit 0;
+fi
+
+if [[ $cmdArgs =~ --port( |=)+([0-9]+) ]]; then
+    port=${BASH_REMATCH[2]}
+fi
+
+# Remove any existing containers currently running (fail silently if there are none)
+docker rm $CONTAINER_NAME 2>/dev/null
+
+# Start the docker container
+# Port 3333 - loads the UI proxied through BrowserSync
+# Port 3334 - loads the BrowserSync control panel
+# Port 3335 - loads the UI by itself (no BrowserSync)
+echo "+ Launching docker container \"$CONTAINER_NAME\" (image: $IMAGE_NAME)"
+docker run -it --rm --name $CONTAINER_NAME -p $port:$port -p 3334:3334 -p 3335:3335 -v $PWD:/usr/src/main $IMAGE_NAME:latest --webui-domain=$HOST_DOMAIN $cmdArgs

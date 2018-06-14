@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+source "./folgers/config/docker"
+
+echo "+ Launching bash shell inside Docker Container \"$CONTAINER_NAME\" (image: $IMAGE_NAME)"
+
+docker exec -it "$CONTAINER_NAME" /bin/bash
